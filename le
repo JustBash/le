@@ -1,0 +1,28 @@
+# /bin/bash
+
+reset
+
+if ! dpkg -s certbot > /dev/null; then
+    apt install certbot -y
+    clear
+fi
+
+if ! [ $1 ]; then
+    echo "No argument specified!"
+    exit
+fi
+
+if [
+    ( $2 ) ||
+    ( $3 ) ||
+    ( $4 ) ||
+    ( $5 ) ||
+    ( $6 )
+]; then
+    echo "To many arguments!"
+    exit
+fi
+
+systemctl stop apache2
+certbot certonly --authenticator standalone -d $1
+systemctl start apache2
