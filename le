@@ -12,17 +12,15 @@ if ! [ $1 ]; then
     exit
 fi
 
-if [
-    ( $2 ) ||
-    ( $3 ) ||
-    ( $4 ) ||
-    ( $5 ) ||
-    ( $6 )
-]; then
-    echo "To many arguments!"
+systemctl stop apache2
+
+if [ $1 == "wc" ]; then
+    certbot certonly --manual --preferred-challenges=dns --server https://acme-v02.api.letsencrypt.org/directory -d $2
+elif [ $1 == "sa" ]; then
+    certbot certonly --authenticator standalone -d $2
+else
+    echo "Unknown argument!"
     exit
 fi
 
-systemctl stop apache2
-certbot certonly --authenticator standalone -d $1
 systemctl start apache2
